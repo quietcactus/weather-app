@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Axios from 'axios';
+import axios from 'axios';
 import './App.css';
 import styled from 'styled-components';
 import WeatherBlock from './Components/WeatherBlock/weatherBlock'
@@ -19,7 +19,7 @@ function App() {
 
   // Get Daily Location Data
   const getWeather = () => {
-    Axios.get('https://api.openweathermap.org/data/2.5/onecall', {
+    axios.get('https://api.openweathermap.org/data/2.5/onecall', {
       params: {
         lat: location.lat,
         lon: location.lon,

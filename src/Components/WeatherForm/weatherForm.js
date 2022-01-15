@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Axios from 'axios';
+import axios from 'axios';
 import styled from 'styled-components';
 import ErrorMessage from './errorMessage';
 
@@ -7,18 +7,20 @@ const WeatherForm = (props) => {
   //States
   const [zipCode, setZipCode] = useState("");
   const [validZipCode, setValidZipCode] = useState(true);
-
+  
   // Geodecode API call
   const zipCodeToCoordinates = () => {
-    Axios.get('http://api.openweathermap.org/geo/1.0/zip', {
+
+    axios.get('http://api.openweathermap.org/geo/1.0/zip', {
       params: {
         zip: zipCode,
         limit: 1,
-        appid: process.env.REACT_APP_WEATHER_API_KEY
+        appid: process.env.REACT_APP_WEATHER_API_KEY,
       }
     })
     .then(
       (response) => {
+        console.log("then");
         // Store data
         const locationData = {
           lon: response.data.lon,
@@ -46,15 +48,33 @@ const WeatherForm = (props) => {
     setZipCode(e.target.value);
   }
 
+  // Check if zipcode is valid
+  const ZipCodeValid = (zipCode) => {
+    const isValidZip = /(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zipCode);
+    return isValidZip;
+  }
+
   // Form Submit
   const handleFormSubmit = (e) => {
     // Prevent Page reload
     e.preventDefault();
 
+    // Check if zipcode is valid
+    if(!ZipCodeValid(zipCode)) {
+      // Clear input
+      setZipCode('');
+
+      // Update Zipcode State for error message
+      setValidZipCode(false);
+
+      // Exit
+      return;
+    }
+
     // Geodecode
     zipCodeToCoordinates();
 
-    // Clean out input
+    // Clean input
     setZipCode('');
   }
 
